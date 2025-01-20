@@ -183,7 +183,7 @@
       const container = document.querySelector(".container");
       const cards = document.querySelectorAll(".card");
 
-      let currentIndex = 1; // Index of the main card
+      let currentIndex = 1; 
       let isDragging = false;
       let startY = 0;
 
@@ -197,10 +197,10 @@
 
         const deltaY = e.clientY - startY;
 
-        // Only move cards if the mouse moved upward (negative deltaY)
+        
         if (deltaY < -50) {
           moveCards("up");
-          startY = e.clientY; // Reset startY after a move
+          startY = e.clientY; 
         }
       });
 
