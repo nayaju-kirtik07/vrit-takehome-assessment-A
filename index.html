@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task A</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(45deg, #ff7b7b, #7b55ff);
+        overflow: hidden;
+      }
+
+      .container {
+        position: relative;
+        width: 300px;
+        height: 100%;
+      }
+
+      .card {
+        width: 300px;
+        height: 250px;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(15px);
+        border-radius: 15px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        color: #fff;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 1;
+        animation: none;
+        transition: top 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+      }
+
+      /* Keyframes for scaling and opacity */
+      @keyframes scaleUp {
+        0% {
+          transform: translate(-50%, -50%) scale(0.25);
+          opacity: 0.5;
+        }
+        50% {
+          transform: translate(-50%, -50%) scale(0.5);
+          opacity: 0.75;
+        }
+        75% {
+          transform: translate(-50%, -50%) scale(0.75);
+          opacity: 0.85;
+        }
+        100% {
+          transform: translate(-50%, -50%) scale(1);
+          opacity: 1;
+        }
+      }
+
+      @keyframes scaleDown {
+        0% {
+          transform: translate(-50%, -50%) scale(1);
+          opacity: 1;
+        }
+        25% {
+          transform: translate(-50%, -50%) scale(0.5);
+          opacity: 0.85;
+        }
+        50% {
+          transform: translate(-50%, -50%) scale(0.8);
+          opacity: 0.75;
+        }
+        100% {
+          transform: translate(-50%, -50%) scale(1);
+          opacity: 0.5;
+        }
+      }
+
+      /* Main card */
+      .card.main {
+        z-index: 3;
+        animation: scaleUp 0.5s ease-in-out forwards;
+      }
+
+      /* Top card */
+      .card.top {
+        z-index: 2;
+        top: calc(50% - 210px);
+        width: 240px;
+        animation: scaleDown 0.5s ease-in-out forwards;
+      }
+
+      /* Bottom card */
+      .card.bottom {
+        z-index: 1;
+        top: calc(50% + 210px);
+        width: 240px;
+        animation: scaleUp 0.5s ease-in-out forwards;
+      }
+
+      .card .top {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 50px;
+      }
+      .card .icon {
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+      }
+
+      .card .title {
+        height: 18px;
+        width: 200px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 10px;
+      }
+
+      .card .detail {
+        height: 12px;
+        width: 100px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 10px;
+        margin-top: 5px;
+      }
+
+      .card .content {
+        height: 90px;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="card top">
+        <div class="content"></div>
+        <div class="top">
+          <div class="icon"></div>
+          <div>
+            <div class="title"></div>
+            <div class="detail"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card main">
+        <div class="content"></div>
+        <div class="top">
+          <div class="icon"></div>
+          <div>
+            <div class="title"></div>
+            <div class="detail"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card bottom">
+        <div class="content"></div>
+        <div class="top">
+          <div class="icon"></div>
+          <div>
+            <div class="title"></div>
+            <div class="detail"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      const container = document.querySelector(".container");
+      const cards = document.querySelectorAll(".card");
+
+      let currentIndex = 1; // Index of the main card
+      let isDragging = false;
+      let startY = 0;
+
+      container.addEventListener("mousedown", (e) => {
+        isDragging = true;
+        startY = e.clientY;
+      });
+
+      container.addEventListener("mousemove", (e) => {
+        if (!isDragging) return;
+
+        const deltaY = e.clientY - startY;
+
+        // Only move cards if the mouse moved upward (negative deltaY)
+        if (deltaY < -50) {
+          moveCards("up");
+          startY = e.clientY; // Reset startY after a move
+        }
+      });
+
+      container.addEventListener("mouseup", () => {
+        isDragging = false;
+      });
+
+      function moveCards(direction) {
+        if (direction === "up") {
+          currentIndex = (currentIndex + 1) % cards.length;
+          updateCardPositions();
+        }
+      }
+
+      function updateCardPositions() {
+        cards.forEach((card, index) => {
+          if (index === currentIndex) {
+            card.className = "card main";
+            card.style.top = "50%";
+          } else if (
+            index ===
+            (currentIndex - 1 + cards.length) % cards.length
+          ) {
+            card.className = "card top";
+            card.style.top = "calc(50% - 210px)";
+          } else if (index === (currentIndex + 1) % cards.length) {
+            card.className = "card bottom";
+            card.style.top = "calc(50% + 210px)";
+          }
+        });
+      }
+    </script>
+  </body>
+</html>
